@@ -31,9 +31,53 @@ string stripspaces(string& s) {
     return result;
 }
 
-string evaluate(Term* t) {
-    if(t == NULL) return "";
-    return "value";
+string evaluate(Term* root) {
+    if(root == NULL) return "";
+    if(root->value.compare("0") == 0 || (root->value.compare("true") == 0) || (root->value.compare("false") == 0)) {
+        return " "+root->value;
+    }
+    else if(root->value.compare("succ") == 0) {
+        string s = evaluate(static_cast<SuccTerm*>(root)->t);
+        string s2 = stripspaces(s);
+        return " succ " + s;
+    }
+    else if(root->value.compare("pred") == 0) {
+        string s = evaluate(static_cast<PredTerm*>(root)->t);
+        string s2 = stripspaces(s);
+        if(s2.compare("0") == 0) {
+            return " 0";
+        }
+        if(s2.length() > 4 && s2.substr(0, 4).compare("succ") == 0) {
+            int found = s.find("succ"); 
+            s = s.substr(found+4, s.length()-(found+4));
+            return s;
+        }
+        return " pred " + s;
+    }
+    else if(root->value.compare("iszero") == 0) {
+        string s = evaluate(static_cast<IsZeroTerm*>(root)->t);
+        string s2 = stripspaces(s);
+        if(s2.compare("0") == 0) {
+            return " true";
+        }
+        if(s2.length() > 4 && s2.substr(0, 4).compare("succ") == 0) {
+            return "false";
+        }
+        return " iszero " + s;
+    }
+    else if(root->value.compare("if-then-else") == 0) {
+        string s1 = evaluate(static_cast<IfThenElseTerm*>(root)->t1);
+        if(stripspaces(s1).compare("true") == 0) {
+            return evaluate(static_cast<IfThenElseTerm*>(root)->t2);
+        }
+        else if(stripspaces(s1).compare("false") == 0) {
+            return evaluate(static_cast<IfThenElseTerm*>(root)->t3);
+        }   
+        string s2 = evaluate(static_cast<IfThenElseTerm*>(root)->t2);
+        string s3 = evaluate(static_cast<IfThenElseTerm*>(root)->t3);
+        return  " if "+s1 + " then "+s2+" else "+s3;
+    }
+    return "";
 }
 
 int lexicalanalyze(string& line, vector<SymtabEntry>& symtab) {
