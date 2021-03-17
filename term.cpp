@@ -4,13 +4,15 @@
 
 using namespace std;
 
+int TRUE=1, FALSE=2, ZERO=3, IF=4, 
+THEN=5, ELSE=6, ISZERO=7, PRED=8, 
+SUCC=9, IFTHENELSE=10;
+
+map<string, int> symbols;
+
 int gettype(string token) {
     return symbols[token];
 }
-
-enum types {TRUE=1, FALSE=2, ZERO=3, IF=4, 
-THEN=5, ELSE=6, ISZERO=7, PRED=8, 
-SUCC=9, IFTHENELSE=10};
 
 class Term {
 public:
@@ -47,9 +49,12 @@ public:
     Term* t1;
     Term* t2;
     Term* t3;
-    IfThenElseTerm(value) {
+    IfThenElseTerm() {
         this->value = "if-then-else";
         this->type = symbols[value];
+        t1 = NULL;
+        t2 = NULL;
+        t3 = NULL;
     }
 };
 

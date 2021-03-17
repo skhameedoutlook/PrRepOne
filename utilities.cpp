@@ -1,7 +1,5 @@
 #include "term.cpp"
 
-map<string, types> symbols;
-
 void initSymbols() {
     symbols["true"] = TRUE;
     symbols["false"] = FALSE;
@@ -18,7 +16,7 @@ void initSymbols() {
 struct SymtabEntry {
     int num;
     string val;
-    string type;
+    int type;
 };
 
 string stripspaces(string& s) {
@@ -81,17 +79,23 @@ int isTerm(vector<SymtabEntry>& symtab, int start, Term* t) {
         return start+1;
     }
     else if(symtab[start].type == IF) {
+        
         status = isTerm(symtab, start+1, t);
+        
         if(status == start+1) return -1;
         if(start >= symtab.size()) return -1;
-        if(symtab[start].type != THEN) return -1;
-        start++;
+        if(symtab[status].type != THEN) return -1;
+        
+        start = status;
         status = isTerm(symtab, start+1, t);
+        
         if(status == start+1) return -1;
         if(start >= symtab.size()) return -1;
-        if(symtab[start].type != ELSE) return -1;
-        start++;
+        if(symtab[status].type != ELSE) return -1;
+        
+        start = status;
         status = isTerm(symtab, start+1, t);
+        
         if(status == start+1) return -1;
         return status;
     }
@@ -101,6 +105,11 @@ int isTerm(vector<SymtabEntry>& symtab, int start, Term* t) {
         return status;
     }
     else if(symtab[start].type == PRED) {
+        status = isTerm(symtab, start+1, t);
+        if(status == start+1) return -1;
+        return status;
+    }
+    else if(symtab[start].type == SUCC) {
         status = isTerm(symtab, start+1, t);
         if(status == start+1) return -1;
         return status;
@@ -123,7 +132,9 @@ void interpret(string& line) {
         cout << "Error while building tokens" << endl;
         return;
     }
+
     status = isTerm(symtab, 0, root);
+    cout << status << endl;
     if(status != symtab.size()) {
         cout << "Syntax Error found" << endl;
         return;
