@@ -6,6 +6,7 @@ bool isnv(Term* t) {
     if(t == NULL) return false;
     if(t->value.compare("0") == 0) return true;
     if(t->value.compare("succ") == 0) return isnv(static_cast<SuccTerm*>(t)->t);
+    if(t->value.compare("pred") == 0) return isnv(static_cast<PredTerm*>(t)->t);
     return false;
 }
 
@@ -56,6 +57,9 @@ string evaluate(Term* root) {
         }
         if(s2.length() > 4 && s2.substr(0, 4).compare("succ") == 0) {
             int found = s.find("succ"); 
+            if(!isnv(static_cast<PredTerm*>(root)->t)) {
+                return " pred " + s;
+            }
             s = s.substr(found+4, s.length()-(found+4));
             return s;
         }
@@ -217,9 +221,9 @@ void interpret(string& line) {
     // cout<<"Traverse End" << endl;
     // cout << endl;
     if(ans.length() == 0) {
-        cout <<line << " =  " <<"No output" << endl;
+        cout <<"No output" << endl;
         return;
     } 
-    cout <<line << ": " << ans << endl;
+    cout <<ans << endl;
 }
 
