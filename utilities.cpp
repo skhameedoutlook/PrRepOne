@@ -2,6 +2,13 @@
 
 Term* temp = NULL;
 
+bool isnv(Term* t) {
+    if(t == NULL) return false;
+    if(t->value.compare("0") == 0) return true;
+    if(t->value.compare("succ") == 0) return isnv(static_cast<SuccTerm*>(t)->t);
+    return false;
+}
+
 void initSymbols() {
     symbols["true"] = TRUE;
     symbols["false"] = FALSE;
@@ -60,7 +67,7 @@ string evaluate(Term* root) {
         if(s2.compare("0") == 0) {
             return " true";
         }
-        if(s2.length() > 4 && s2.substr(0, 4).compare("succ") == 0) {
+        if(isnv(static_cast<IsZeroTerm*>(root)->t)) {
             return "false";
         }
         return " iszero " + s;
