@@ -1,19 +1,18 @@
 #include "term.cpp"
 
-enum types {TRUE=1, FALSE=2, ZERO=3, IFTHENELSE=4, ISZERO=5, PRED=6, SUCC=7};
-
 map<string, types> symbols;
 
 void initSymbols() {
     symbols["true"] = TRUE;
     symbols["false"] = FALSE;
     symbols["0"] = ZERO;
-    symbols["if"] = IFTHENELSE;
-    symbols["then"] = IFTHENELSE;
-    symbols["else"] = IFTHENELSE;
-    symbols["iszero"] = SUCC;
+    symbols["if"] = IF;
+    symbols["then"] = THEN;
+    symbols["else"] = ELSE;
+    symbols["iszero"] = ISZERO;
     symbols["pred"] = PRED;
     symbols["succ"] = SUCC;
+    symbols["if-then-else"] = IFTHENELSE;
 }
 
 struct SymtabEntry {
@@ -37,13 +36,9 @@ string evaluate(Term* t) {
     return "value";
 }
 
-int gettype(string token) {
-    return symbols[token];
-}
-
 int lexicalanalyze(string& line, vector<SymtabEntry>& symtab) {
     string token = "";
-    int type = "";
+    int type;
     SymtabEntry s;
     int i = 0;
     while(i < line.length()) {
@@ -51,27 +46,70 @@ int lexicalanalyze(string& line, vector<SymtabEntry>& symtab) {
         else {
             if(token.length() > 0) {
                 type = gettype(token);
-                if(type) == 0) return -1;
+                if(type == 0) return -1;
                 s.num = symtab.size()+1;
                 s.type = type;
                 s.val = token;
                 symtab.push_back(s);
+                token = "";
             }
         }
         i++;
     }
     if(token.length() > 0) {
         type = gettype(token);
-        if(type) == 0) return -1;
+        if(type == 0) return -1;
         s.num = symtab.size()+1;
         s.type = type;
         s.val = token;
         symtab.push_back(s);
+        token = "";
     }
     return 1;
 }
 
-int isTerm(vector<SymtabEntry>& symtab, int start) {
+int isTerm(vector<SymtabEntry>& symtab, int start, Term* t) {
+    if(start >= symtab.size()) return start;
+    int status;
+    if(symtab[start].type == TRUE) {
+        return start+1;
+    }
+    else if(symtab[start].type == FALSE) {
+        return start+1;
+    }
+    else if(symtab[start].type == ZERO) {
+        return start+1;
+    }
+    else if(symtab[start].type == IF) {
+        status = isTerm(symtab, start+1, t);
+        if(status == start+1) return -1;
+        if(start >= symtab.size()) return -1;
+        if(symtab[start].type != THEN) return -1;
+        start++;
+        status = isTerm(symtab, start+1, t);
+        if(status == start+1) return -1;
+        if(start >= symtab.size()) return -1;
+        if(symtab[start].type != ELSE) return -1;
+        start++;
+        status = isTerm(symtab, start+1, t);
+        if(status == start+1) return -1;
+        return status;
+    }
+    else if(symtab[start].type == ISZERO) {
+        status = isTerm(symtab, start+1, t);
+        if(status == start+1) return -1;
+        return status;
+    }
+    else if(symtab[start].type == PRED) {
+        status = isTerm(symtab, start+1, t);
+        if(status == start+1) return -1;
+        return status;
+    }
+    else if(symtab[start].type == FALSE) {
+        status = isTerm(symtab, start+1, t);
+        if(status == start+1) return -1;
+        return status;
+    }
     return 1;
 }
 
@@ -85,8 +123,8 @@ void interpret(string& line) {
         cout << "Error while building tokens" << endl;
         return;
     }
-    status = isTerm(symtab, 0);
-    if(status == -1) {
+    status = isTerm(symtab, 0, root);
+    if(status != symtab.size()) {
         cout << "Syntax Error found" << endl;
         return;
     }
