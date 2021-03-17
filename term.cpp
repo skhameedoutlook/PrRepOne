@@ -20,7 +20,7 @@ public:
     string type;
 };
 
-class TrueTerm:Term {
+class TrueTerm: public Term {
 public:
     TrueTerm() {
         this->value = "true";
@@ -28,7 +28,7 @@ public:
     }
 };
 
-class FalseTerm:Term {
+class FalseTerm: public Term {
 public:
     FalseTerm() {
         this->value = "false";
@@ -36,7 +36,7 @@ public:
     }
 };
 
-class ZeroTerm:Term {
+class ZeroTerm: public Term {
 public:
     ZeroTerm() {
         this->value = "0";
@@ -44,7 +44,7 @@ public:
     }
 };
 
-class IfThenElseTerm:Term {
+class IfThenElseTerm: public Term {
 public:
     Term* t1;
     Term* t2;
@@ -58,7 +58,7 @@ public:
     }
 };
 
-class IsZeroTerm:Term {
+class IsZeroTerm: public Term {
 public:
     Term* t;
     IsZeroTerm() {
@@ -67,7 +67,7 @@ public:
     }
 };
 
-class PredTerm:Term {
+class PredTerm: public Term {
 public:
     Term* t;
     PredTerm() {
@@ -76,7 +76,7 @@ public:
     }
 };
 
-class SuccTerm:Term {
+class SuccTerm: public Term {
 public:
     Term* t;
     SuccTerm() {

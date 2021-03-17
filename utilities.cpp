@@ -1,5 +1,7 @@
 #include "term.cpp"
 
+Term* temp = NULL;
+
 void initSymbols() {
     symbols["true"] = TRUE;
     symbols["false"] = FALSE;
@@ -66,65 +68,86 @@ int lexicalanalyze(string& line, vector<SymtabEntry>& symtab) {
     return 1;
 }
 
-int isTerm(vector<SymtabEntry>& symtab, int start, Term* t) {
+int isTerm(vector<SymtabEntry>& symtab, int start, Term*& t) {
     if(start >= symtab.size()) return start;
     int status;
     if(symtab[start].type == TRUE) {
+        t = new TrueTerm();
         return start+1;
     }
     else if(symtab[start].type == FALSE) {
+        t = new FalseTerm();
         return start+1;
     }
     else if(symtab[start].type == ZERO) {
+        t = new ZeroTerm();
         return start+1;
     }
     else if(symtab[start].type == IF) {
-        
-        status = isTerm(symtab, start+1, t);
-        
+        t = new IfThenElseTerm();
+        status = isTerm(symtab, start+1, static_cast<IfThenElseTerm*>(t)->t1);
         if(status == start+1) return -1;
         if(start >= symtab.size()) return -1;
         if(symtab[status].type != THEN) return -1;
-        
         start = status;
-        status = isTerm(symtab, start+1, t);
-        
+        status = isTerm(symtab, start+1, static_cast<IfThenElseTerm*>(t)->t2);
         if(status == start+1) return -1;
         if(start >= symtab.size()) return -1;
         if(symtab[status].type != ELSE) return -1;
         
         start = status;
-        status = isTerm(symtab, start+1, t);
+        status = isTerm(symtab, start+1, static_cast<IfThenElseTerm*>(t)->t3);
         
         if(status == start+1) return -1;
         return status;
     }
     else if(symtab[start].type == ISZERO) {
-        status = isTerm(symtab, start+1, t);
+        t = new IsZeroTerm();
+        status = isTerm(symtab, start+1, static_cast<IsZeroTerm*>(t)->t);
         if(status == start+1) return -1;
         return status;
     }
     else if(symtab[start].type == PRED) {
-        status = isTerm(symtab, start+1, t);
+        t = new PredTerm();
+        status = isTerm(symtab, start+1, static_cast<PredTerm*>(t)->t);
         if(status == start+1) return -1;
         return status;
     }
     else if(symtab[start].type == SUCC) {
-        status = isTerm(symtab, start+1, t);
+        t = new SuccTerm();
+        status = isTerm(symtab, start+1, static_cast<SuccTerm*>(t)->t);
         if(status == start+1) return -1;
         return status;
     }
-    else if(symtab[start].type == FALSE) {
-        status = isTerm(symtab, start+1, t);
-        if(status == start+1) return -1;
-        return status;
+    return -1;
+}
+
+void traverse(Term* root) {
+    if(root == NULL)  return;
+    cout << root->value << "->";
+    if(root->value.compare("0") == 0 || (root->value.compare("true") == 0) || (root->value.compare("false") == 0)) {
+        return;
     }
-    return 1;
+    else if(root->value.compare("succ") == 0) {
+        traverse(static_cast<SuccTerm*>(root)->t);
+    }
+    else if(root->value.compare("pred") == 0) {
+        traverse(static_cast<PredTerm*>(root)->t);
+    }
+    else if(root->value.compare("iszero") == 0) {
+        traverse(static_cast<IsZeroTerm*>(root)->t);
+    }
+    else if(root->value.compare("if-then-else") == 0) {
+        traverse(static_cast<IfThenElseTerm*>(root)->t1);
+        traverse(static_cast<IfThenElseTerm*>(root)->t2);
+        traverse(static_cast<IfThenElseTerm*>(root)->t3);
+    }
 }
 
 void interpret(string& line) {
     vector<SymtabEntry> symtab;
     Term* root = NULL;
+    temp = NULL;
     int status;
     string ans = "";
     status = lexicalanalyze(line, symtab);
@@ -132,18 +155,20 @@ void interpret(string& line) {
         cout << "Error while building tokens" << endl;
         return;
     }
-
     status = isTerm(symtab, 0, root);
-    cout << status << endl;
     if(status != symtab.size()) {
         cout << "Syntax Error found" << endl;
         return;
     }
     ans = evaluate(root);
+    // cout<<"Traverse Start" << endl;
+    // traverse(root);
+    // cout<<"Traverse End" << endl;
+    // cout << endl;
     if(ans.length() == 0) {
-        cout << "No output" << endl;
+        cout <<line << " =  " <<"No output" << endl;
         return;
     } 
-    cout << ans << endl;
+    cout <<line << ": " << ans << endl;
 }
 
