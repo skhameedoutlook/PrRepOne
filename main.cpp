@@ -1,4 +1,5 @@
-#include "utilities.cpp"
+#include "utilities.h"
+#include "term.h"
 
 int main() {
     initSymbols();

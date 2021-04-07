@@ -1,86 +1,71 @@
-#include <iostream>
-#include <string>
-#include <bits/stdc++.h>
+#include "term.h"
 
-using namespace std;
-
-int TRUE=1, FALSE=2, ZERO=3, IF=4, 
-THEN=5, ELSE=6, ISZERO=7, PRED=8, 
-SUCC=9, IFTHENELSE=10;
-
-map<string, int> symbols;
-
-int gettype(string token) {
-    return symbols[token];
+string gettype(string token) {
+    if(token.compare("true") == 0) {
+        return "true";
+    }
+    else if(token.compare("false") == 0) {
+        return "false";
+    }
+    else if(token.compare("0") == 0) {
+        return "zero";
+    }
+    else if(token.compare("if") == 0) {
+        return "if";
+    }
+    else if(token.compare("then") == 0) {
+        return "then";
+    }
+    else if(token.compare("else") == 0) {
+        return "else";
+    }
+    else if(token.compare("iszero") == 0) {
+        return "iszero";
+    }
+    else if(token.compare("pred") == 0) {
+        return "pred";
+    }
+    else if(token.compare("succ") == 0) {
+        return "succ";
+    }
+    return "";
 }
 
-class Term {
-public:
-    string value;
-    string type;
-};
+TrueTerm::TrueTerm() {
+    this->value = "true";
+    this->type = gettype(value);
+}
 
-class TrueTerm: public Term {
-public:
-    TrueTerm() {
-        this->value = "true";
-        this->type = symbols[value];
-    }
-};
+FalseTerm::FalseTerm() {
+    this->value = "false";
+    this->type = gettype(value);
+}
 
-class FalseTerm: public Term {
-public:
-    FalseTerm() {
-        this->value = "false";
-        this->type = symbols[value];
-    }
-};
+ZeroTerm::ZeroTerm() {
+    this->value = "0";
+    this->type = gettype(value);
+}
 
-class ZeroTerm: public Term {
-public:
-    ZeroTerm() {
-        this->value = "0";
-        this->type = symbols[value];
-    }
-};
+IfThenElseTerm::IfThenElseTerm() {
+    this->value = "if-then-else";
+    this->type = gettype(value);
+    t1 = NULL;
+    t2 = NULL;
+    t3 = NULL;
+}
 
-class IfThenElseTerm: public Term {
-public:
-    Term* t1;
-    Term* t2;
-    Term* t3;
-    IfThenElseTerm() {
-        this->value = "if-then-else";
-        this->type = symbols[value];
-        t1 = NULL;
-        t2 = NULL;
-        t3 = NULL;
-    }
-};
+IsZeroTerm::IsZeroTerm() {
+    this->value = "iszero";
+    this->type = gettype(value);
+}
 
-class IsZeroTerm: public Term {
-public:
-    Term* t;
-    IsZeroTerm() {
-        this->value = "iszero";
-        this->type = symbols[value];
-    }
-};
+PredTerm::PredTerm() {
+    this->value = "pred";
+    this->type = gettype(value);
+}
 
-class PredTerm: public Term {
-public:
-    Term* t;
-    PredTerm() {
-        this->value = "pred";
-        this->type = symbols[value];
-    }
-};
+SuccTerm::SuccTerm() {
+    this->value = "succ";
+    this->type = gettype(value);
+}
 
-class SuccTerm: public Term {
-public:
-    Term* t;
-    SuccTerm() {
-        this->value = "succ";
-        this->type = symbols[value];
-    }
-};
