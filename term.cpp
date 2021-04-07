@@ -28,6 +28,9 @@ string gettype(string token) {
     else if(token.compare("succ") == 0) {
         return "succ";
     }
+    else if(token.compare("specialop") == 0) {
+        return "specialop";
+    }
     return "";
 }
 
@@ -67,5 +70,13 @@ PredTerm::PredTerm() {
 SuccTerm::SuccTerm() {
     this->value = "succ";
     this->type = gettype(value);
+}
+
+SpecialOpTerm::SpecialOpTerm() {
+    this->value = "specialop";
+    this->type = gettype(value);
+    t1 = NULL;
+    t2 = NULL;
+    t3 = NULL;
 }
 

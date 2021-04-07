@@ -37,14 +37,33 @@ string stripspaces(string& s) {
 }
 
 string evaluate(Term* root) {
+
     if(root == NULL) return "";
     if(root->value.compare("0") == 0 || (root->value.compare("true") == 0) || (root->value.compare("false") == 0)) {
+
         return " "+root->value;
     }
     else if(root->value.compare("succ") == 0) {
         string s = evaluate(static_cast<SuccTerm*>(root)->t);
         string s2 = stripspaces(s);
         return " succ " + s;
+    }
+    else if(root->value.compare("specialop") == 0) {
+
+
+        string t1value = evaluate(static_cast<SpecialOpTerm*>(root)->t1);
+
+        string t2value = evaluate(static_cast<SpecialOpTerm*>(root)->t2);
+
+
+        string t3value = evaluate(static_cast<SpecialOpTerm*>(root)->t3);
+
+        if(t1value.compare(t2value) == 0) {
+            return " false";
+        }
+        else {
+            return " "+t3value;
+        }
     }
     else if(root->value.compare("pred") == 0) {
         string s = evaluate(static_cast<PredTerm*>(root)->t);
@@ -134,6 +153,27 @@ int isTerm(vector<SymtabEntry>& symtab, int start, Term*& t) {
     else if(symtab[start].type.compare("zero") == 0) {
         t = new ZeroTerm();
         return start+1;
+    }
+    else if(symtab[start].type.compare("specialop") == 0) {
+        t = new SpecialOpTerm();
+        status = isTerm(symtab, start+1, static_cast<SpecialOpTerm*>(t)->t1);
+        if(status == start+1) return -1;
+        if(start >= symtab.size()) return -1;
+
+        start = status;
+        status = isTerm(symtab, start, static_cast<SpecialOpTerm*>(t)->t2);
+        cout << status << endl;
+        if(status == start) return -1;
+        if(start >= symtab.size()) return -1;
+        start = status;
+        status = isTerm(symtab, start, static_cast<SpecialOpTerm*>(t)->t3);
+        cout << status << endl;
+        if(status == start) return -1;
+        if(start >= symtab.size()) return -1;
+
+
+        if(status == start) return -1;
+        return status;
     }
     else if(symtab[start].type.compare("if") == 0) {
         t = new IfThenElseTerm();

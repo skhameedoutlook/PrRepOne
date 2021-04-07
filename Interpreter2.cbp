@@ -31,6 +31,11 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
+		<Unit filename="main.cpp" />
+		<Unit filename="term.cpp" />
+		<Unit filename="term.h" />
+		<Unit filename="utilities.cpp" />
+		<Unit filename="utilities.h" />
 		<Extensions>
 			<lib_finder disable_auto="1" />
 		</Extensions>

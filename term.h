@@ -60,4 +60,12 @@ public:
     SuccTerm();
 };
 
+class SpecialOpTerm: public Term {
+public:
+    Term *t1;
+    Term *t2;
+    Term *t3;
+    SpecialOpTerm();
+};
+
 #endif
