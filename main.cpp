@@ -1,5 +1,6 @@
 #include "utilities.h"
 #include "term.h"
+#include <fstream>
 
 int main() {
     initSymbols();
@@ -8,16 +9,32 @@ int main() {
     // for(int i = 0; i < lines.size(); i++) {
     //     interpret(lines[i]);
     // }
+    ifstream myfile ("input1.txt");
     string line = "";
+
+    //cout << "----Untyped Arithmetic Expressions Language v1.0---" << endl;
+    //cout << "Type q to quit"<< endl;
+    //cout << endl;
+    //cout << ">>> ";
+    while(getline(myfile, line)) {
+        transform(line.begin(), line.end(), line.begin(), ::tolower);
+        if(line.compare("q") == 0) break;
+        interpret(line);
+    }
+    myfile.close();
+
+    /*
     cout << "----Untyped Arithmetic Expressions Language v1.0---" << endl;
     cout << "Type q to quit"<< endl;
     cout << endl;
     cout << ">>> ";
     while(getline(cin, line)) {
+        transform(line.begin(), line.end(), line.begin(), ::tolower);
         if(line.compare("q") == 0) break;
         interpret(line);
         cout << ">>> ";
     }
+    */
 
     return 0;
 }

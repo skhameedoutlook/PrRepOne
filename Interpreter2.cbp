@@ -31,6 +31,7 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
+		<Unit filename="input1.txt" />
 		<Unit filename="main.cpp" />
 		<Unit filename="term.cpp" />
 		<Unit filename="term.h" />

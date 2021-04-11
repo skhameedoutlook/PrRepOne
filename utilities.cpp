@@ -26,13 +26,30 @@ void initSymbols() {
     symbols["if-then-else"] = IFTHENELSE;
 }
 
-string stripspaces(string& s) {
+string stripspaces(string s) {
     string result = "";
     for(int i = 0; i < s.length(); i++) {
         if(s[i] != ' ') {
             result += s[i];
         }
     }
+    return result;
+}
+
+string makeproperstring(string s) {
+    string result = "";
+    if(s.length() == 0) return result;
+    for(int i = 0; i < s.length(); i++) {
+        if(i > 0 && s[i] == s[i-1] && s[i] == ' ') {
+            continue;
+        }
+
+        result += s[i];
+    }
+    if(result[0] == ' ') result = result.substr(1, s.length()-1);
+
+    if(result[result.length()-1] == ' ') result = result.substr(0, result.length()-1);
+
     return result;
 }
 
@@ -49,8 +66,17 @@ string evaluate(Term* root) {
         return " succ " + s;
     }
     else if(root->value.compare("specialop") == 0) {
-
-
+        string s1 = evaluate(static_cast<SpecialOpTerm*>(root)->t1);
+        if(stripspaces(s1).compare("true") == 0) {
+            return evaluate(static_cast<SpecialOpTerm*>(root)->t2);
+        }
+        else if(stripspaces(s1).compare("false") == 0) {
+            return evaluate(static_cast<SpecialOpTerm*>(root)->t3);
+        }
+        string s2 = evaluate(static_cast<SpecialOpTerm*>(root)->t2);
+        string s3 = evaluate(static_cast<SpecialOpTerm*>(root)->t3);
+        return  " if "+s1 + " then "+s2+" else "+s3;
+        /* old code
         string t1value = evaluate(static_cast<SpecialOpTerm*>(root)->t1);
 
         string t2value = evaluate(static_cast<SpecialOpTerm*>(root)->t2);
@@ -64,6 +90,7 @@ string evaluate(Term* root) {
         else {
             return " "+t3value;
         }
+        */
     }
     else if(root->value.compare("pred") == 0) {
         string s = evaluate(static_cast<PredTerm*>(root)->t);
@@ -162,12 +189,10 @@ int isTerm(vector<SymtabEntry>& symtab, int start, Term*& t) {
 
         start = status;
         status = isTerm(symtab, start, static_cast<SpecialOpTerm*>(t)->t2);
-        cout << status << endl;
         if(status == start) return -1;
         if(start >= symtab.size()) return -1;
         start = status;
         status = isTerm(symtab, start, static_cast<SpecialOpTerm*>(t)->t3);
-        cout << status << endl;
         if(status == start) return -1;
         if(start >= symtab.size()) return -1;
 
@@ -266,7 +291,9 @@ void interpret(string& line) {
         cout <<"No output" << endl;
         return;
     }
-    cout <<ans << endl;
+
+    //cout << ans << " | " << endl;
+    cout <<makeproperstring(ans) << endl;
 }
 
 

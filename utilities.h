@@ -13,7 +13,8 @@ struct SymtabEntry {
     string type;
 };
 
-string stripspaces(string& s);
+string stripspaces(string s);
+string makeproperstring(string s);
 
 string evaluate(Term* root);
 
