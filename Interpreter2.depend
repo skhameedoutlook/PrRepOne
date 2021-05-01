@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1618135386 source:c:\users\lapowner\desktop\work\prrepone\main.cpp
+1618334677 source:c:\users\lapowner\desktop\work\prrepone\main.cpp
 	"utilities.h"
 	"term.h"
 	<fstream>
@@ -24,5 +24,25 @@
 	"term.h"
 
 1618134522 c:\users\lapowner\desktop\work\prrepone\utilities.h
+	"term.h"
+
+1618334677 source:c:\users\lapowner\desktop\work\prreponetwo\main.cpp
+	"utilities.h"
+	"term.h"
+	<fstream>
+
+1619847280 c:\users\lapowner\desktop\work\prreponetwo\utilities.h
+	"term.h"
+
+1617812362 c:\users\lapowner\desktop\work\prreponetwo\term.h
+	<iostream>
+	<string>
+	<bits/stdc++.h>
+
+1617812601 source:c:\users\lapowner\desktop\work\prreponetwo\term.cpp
+	"term.h"
+
+1619849788 source:c:\users\lapowner\desktop\work\prreponetwo\utilities.cpp
+	"utilities.h"
 	"term.h"
 

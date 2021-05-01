@@ -25,4 +25,6 @@ void traverse(Term* root);
 
 void interpret(string& line);
 
+string isTypeSafe(Term* root, vector<string>& typestack);
+
 #endif

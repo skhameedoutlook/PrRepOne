@@ -1,0 +1,51 @@
+true
+false
+0
+succ 0
+succ pred 0
+pred succ 0
+pred 0
+iszero pred 0
+iszero succ 0
+if true then true else false
+if false then true else false
+if iszero 0 then succ 0 else succ succ 0
+if iszero succ 0 then succ 0 else succ succ 0
+specialop iszero 0 true false
+specialop iszero succ 0 false false
+pred succ
+if true then true else false
+
+if iszero pred pred succ succ 0 then if true then true else true else iszero succ 0
+
+
+specialop iszero pred pred succ succ 0  if true then true else true  iszero succ 0
+
+if iszero pred pred succ succ 0 then specialop true true true else iszero succ 0
+
+specialop iszero pred pred succ succ 0  specialop true true true  iszero succ 0
+
+if true then 0 else 0
+
+if true then pred succ 0 else succ pred 0
+
+specialop true pred succ 0 succ pred 0
+q
+
+//outputs
+TRUE
+FALSE
+0
+succ 0
+succ 0
+0
+TRUE
+FALSE
+TRUE
+FALSE
+succ 0
+succ succ 0
+TRUE
+FALSE
+
+

@@ -16,14 +16,15 @@ int main() {
     //cout << "Type q to quit"<< endl;
     //cout << endl;
     //cout << ">>> ";
+    /*
     while(getline(myfile, line)) {
         transform(line.begin(), line.end(), line.begin(), ::tolower);
         if(line.compare("q") == 0) break;
         interpret(line);
     }
     myfile.close();
+    */
 
-    /*
     cout << "----Untyped Arithmetic Expressions Language v1.0---" << endl;
     cout << "Type q to quit"<< endl;
     cout << endl;
@@ -34,7 +35,7 @@ int main() {
         interpret(line);
         cout << ">>> ";
     }
-    */
+
 
     return 0;
 }

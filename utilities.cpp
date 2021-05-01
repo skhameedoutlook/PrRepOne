@@ -261,6 +261,122 @@ void traverse(Term* root) {
     }
 }
 
+string isTypeSafe(Term* root, vector<string>& typestack) {
+    if(typestack.size() > 0 && typestack[typestack.size()-1].compare("") == 0) return "";
+    if(root == NULL) return "";
+    //cout << "NOW " << root->value << endl;
+    if(root->value.compare("0") == 0) {
+        typestack.push_back("nv");
+        return " "+root->value;
+    }
+    else if (root->value.compare("true") == 0 || (root->value.compare("false") == 0)) {
+        typestack.push_back("bool");
+        return " "+root->value;
+    }
+    else if(root->value.compare("succ") == 0) {
+        string s = isTypeSafe(static_cast<SuccTerm*>(root)->t, typestack);
+        string s2 = stripspaces(s);
+        if(typestack[typestack.size()-1].compare("nv") == 0 || typestack[typestack.size()-1].compare("0") == 0)  {
+            typestack.push_back("nv");
+        }
+        return " succ " + s;
+    }
+    else if(root->value.compare("specialop") == 0) {
+        string s1 = isTypeSafe(static_cast<SpecialOpTerm*>(root)->t1, typestack);
+        s1 = stripspaces(s1);
+        //cout << "Top " << typestack[typestack.size()-1] << ", " << s1 << endl;
+        if(s1.compare("true") == 0 || s1.compare("false") == 0) {
+            string s2 = isTypeSafe(static_cast<SpecialOpTerm*>(root)->t2, typestack);
+            //cout << "Top2 " << typestack[typestack.size()-1] << endl;
+            if(typestack[typestack.size()-1].compare("true") == 0 || typestack[typestack.size()-1].compare("false") == 0 || typestack[typestack.size()-1].compare("bool") == 0 || typestack[typestack.size()-1].compare("0") == 0 || typestack[typestack.size()-1].compare("nv") == 0) {
+                string type_t2 = typestack[typestack.size()-1];
+                string s3 = isTypeSafe(static_cast<SpecialOpTerm*>(root)->t3, typestack);
+                //cout << "Top3 " << typestack[typestack.size()-1] << endl;
+                if(typestack[typestack.size()-1].compare(type_t2) != 0) {
+                    //cout << typestack[typestack.size()-1] << " and " << type_t2 << endl;
+                    //cout << "Inside" << endl;
+                    typestack.push_back("");
+                }
+
+            }
+            if(stripspaces(s1).compare("true") == 0) {
+                return isTypeSafe(static_cast<SpecialOpTerm*>(root)->t2, typestack);
+            }
+            else if(stripspaces(s1).compare("false") == 0) {
+                return isTypeSafe(static_cast<SpecialOpTerm*>(root)->t3, typestack);
+            }
+        }
+        typestack.push_back("");
+        string s2 = isTypeSafe(static_cast<SpecialOpTerm*>(root)->t2, typestack);
+        string s3 = isTypeSafe(static_cast<SpecialOpTerm*>(root)->t3, typestack);
+        return  " if "+s1 + " then "+s2+" else "+s3;
+    }
+    else if(root->value.compare("pred") == 0) {
+        string s = isTypeSafe(static_cast<PredTerm*>(root)->t, typestack);
+        string s2 = stripspaces(s);
+        if(s2.compare("0") == 0) {
+            return " 0";
+        }
+        if(s2.length() > 4 && s2.substr(0, 4).compare("succ") == 0) {
+            int found = s.find("succ");
+            if(!isnv(static_cast<PredTerm*>(root)->t)) {
+                typestack.push_back("");
+                return " pred " + s;
+            }
+            typestack.pop_back();
+            s = s.substr(found+4, s.length()-(found+4));
+            return s;
+        }
+        typestack.push_back("");
+        return " pred " + s;
+    }
+    else if(root->value.compare("iszero") == 0) {
+        string s = isTypeSafe(static_cast<IsZeroTerm*>(root)->t, typestack);
+        string s2 = stripspaces(s);
+        if(s2.compare("0") == 0) {
+            typestack.push_back("bool");
+            return " true";
+        }
+        if(isnv(static_cast<IsZeroTerm*>(root)->t)) {
+            typestack.push_back("bool");
+            return "false";
+        }
+        typestack.push_back("");
+        return " iszero " + s;
+    }
+    else if(root->value.compare("if-then-else") == 0) {
+        string s1 = isTypeSafe(static_cast<IfThenElseTerm*>(root)->t1, typestack);
+        s1 = stripspaces(s1);
+        //cout << "Top " << typestack[typestack.size()-1] << ", " << s1 << endl;
+        if(s1.compare("true") == 0 || s1.compare("false") == 0) {
+            string s2 = isTypeSafe(static_cast<IfThenElseTerm*>(root)->t2, typestack);
+            //cout << "Top2 " << typestack[typestack.size()-1] << endl;
+            if(typestack[typestack.size()-1].compare("true") == 0 || typestack[typestack.size()-1].compare("false") == 0 || typestack[typestack.size()-1].compare("bool") == 0 || typestack[typestack.size()-1].compare("0") == 0 || typestack[typestack.size()-1].compare("nv") == 0) {
+                string type_t2 = typestack[typestack.size()-1];
+                string s3 = isTypeSafe(static_cast<IfThenElseTerm*>(root)->t3, typestack);
+                //cout << "Top3 " << typestack[typestack.size()-1] << endl;
+                if(typestack[typestack.size()-1].compare(type_t2) != 0) {
+                    //cout << typestack[typestack.size()-1] << " and " << type_t2 << endl;
+                    //cout << "Inside" << endl;
+                    typestack.push_back("");
+                }
+
+            }
+            if(stripspaces(s1).compare("true") == 0) {
+                return isTypeSafe(static_cast<IfThenElseTerm*>(root)->t2, typestack);
+            }
+            else if(stripspaces(s1).compare("false") == 0) {
+                return isTypeSafe(static_cast<IfThenElseTerm*>(root)->t3, typestack);
+            }
+        }
+        typestack.push_back("");
+        string s2 = isTypeSafe(static_cast<IfThenElseTerm*>(root)->t2, typestack);
+        string s3 = isTypeSafe(static_cast<IfThenElseTerm*>(root)->t3, typestack);
+        return  " if "+s1 + " then "+s2+" else "+s3;
+    }
+    return "";
+}
+
 void interpret(string& line) {
     vector<SymtabEntry> symtab;
     Term* root = NULL;
@@ -281,6 +397,15 @@ void interpret(string& line) {
     if(status != symtab.size()) {
         cout << "Syntax Error found" << endl;
         return;
+    }
+    vector<string> typestack;
+    string type = isTypeSafe(root,  typestack);
+    if(typestack[typestack.size()-1].compare("") == 0) {
+        cout << "Type Error found" << endl;
+        return;
+    }
+    else {
+        cout << "Type checking successful. Result is: ";
     }
     ans = evaluate(root);
     // cout<<"Traverse Start" << endl;
