@@ -378,6 +378,7 @@ string isTypeSafe(Term* root, vector<string>& typestack) {
 }
 
 void interpret(string& line) {
+    if(line.length() == 0) return;
     vector<SymtabEntry> symtab;
     Term* root = NULL;
     temp = NULL;

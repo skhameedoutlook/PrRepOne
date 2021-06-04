@@ -46,3 +46,43 @@
 	"utilities.h"
 	"term.h"
 
+1619850554 source:c:\users\lapowner\desktop\work\prrepone-main\main.cpp
+	"utilities.h"
+	"term.h"
+	<fstream>
+
+1619850554 c:\users\lapowner\desktop\work\prrepone-main\utilities.h
+	"term.h"
+
+1619850554 c:\users\lapowner\desktop\work\prrepone-main\term.h
+	<iostream>
+	<string>
+	<bits/stdc++.h>
+
+1619850554 source:c:\users\lapowner\desktop\work\prrepone-main\term.cpp
+	"term.h"
+
+1621571034 source:c:\users\lapowner\desktop\work\prrepone-main\utilities.cpp
+	"utilities.h"
+	"term.h"
+
+1619850554 source:c:\users\lapowner\desktop\work\prrepone-main2\main.cpp
+	"utilities.h"
+	"term.h"
+	<fstream>
+
+1619850554 c:\users\lapowner\desktop\work\prrepone-main2\utilities.h
+	"term.h"
+
+1619850554 c:\users\lapowner\desktop\work\prrepone-main2\term.h
+	<iostream>
+	<string>
+	<bits/stdc++.h>
+
+1619850554 source:c:\users\lapowner\desktop\work\prrepone-main2\term.cpp
+	"term.h"
+
+1621571034 source:c:\users\lapowner\desktop\work\prrepone-main2\utilities.cpp
+	"utilities.h"
+	"term.h"
+
