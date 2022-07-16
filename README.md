@@ -1,1 +1,1 @@
-# UntypedArithmeticExpressions
+# Untyped and TypedArithmeticExpressions
